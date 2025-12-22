@@ -104,12 +104,17 @@ a {
 
 /* Animations */
 .reveal {
+  opacity: 1;
+  transform: none;
+}
+
+body.js-enabled .reveal {
   opacity: 0;
   transform: translateY(30px);
   transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
 }
 
-.reveal.active {
+body.js-enabled .reveal.active {
   opacity: 1;
   transform: translateY(0);
 }
@@ -488,15 +493,15 @@ input[type="email"]:focus-visible {
 }
 
 .break-crowd {
-  background-image: url("../../mood-crowd.jpg");
+  background-image: url("/bloc-mood/mood-crowd.jpg");
 }
 
 .break-rooftop {
-  background-image: url("../../mood-rooftop.jpg");
+  background-image: url("/bloc-mood/mood-rooftop.jpg");
 }
 
 .break-crew {
-  background-image: url("../../mood-crew.jpg");
+  background-image: url("/bloc-mood/mood-crew.jpg");
 }
 
 @media (min-width: 901px) {
@@ -897,22 +902,33 @@ if (menuToggleButton && navLinks) {
   });
 }
 
-const observerOptions = {
-  threshold: 0.1,
-  rootMargin: "0px 0px -50px 0px",
-};
+const revealElements = document.querySelectorAll(".reveal");
+const supportsIntersectionObserver = "IntersectionObserver" in window;
 
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add("active");
-    }
+if (supportsIntersectionObserver) {
+  if (document.body) {
+    document.body.classList.add("js-enabled");
+  }
+
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: "0px 0px -50px 0px",
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("active");
+      }
+    });
+  }, observerOptions);
+
+  revealElements.forEach((el) => {
+    observer.observe(el);
   });
-}, observerOptions);
-
-document.querySelectorAll(".reveal").forEach((el) => {
-  observer.observe(el);
-});
+} else {
+  revealElements.forEach((el) => el.classList.add("active"));
+}
 
 (function enableMobileParallax() {
   const MOBILE_MAX_WIDTH = 900;
