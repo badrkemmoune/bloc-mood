@@ -128,6 +128,12 @@ header {
   justify-content: space-between;
 }
 
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .nav-left {
   display: flex;
   align-items: center;
@@ -498,6 +504,16 @@ header {
   border-radius: 1rem;
 }
 
+.comm-heading {
+  font-size: 1rem;
+  color: #fff;
+}
+
+.comm-copy {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
 .comm-label {
   color: var(--accent);
   font-size: 0.7rem;
@@ -520,6 +536,34 @@ header {
   padding: 2.3rem 2rem;
   border-radius: 1.5rem;
   box-shadow: 0 0 35px rgba(163, 255, 74, 0.08);
+}
+
+.join-title {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.muted-text {
+  color: var(--muted);
+}
+
+.paragraph {
+  margin-bottom: 1rem;
+}
+
+.paragraph-lg {
+  margin-bottom: 1.2rem;
+}
+
+.drops-title {
+  color: #fff;
+  font-size: 1.3rem;
+  margin-bottom: 1rem;
+}
+
+.hero-badge--flush {
+  margin-top: 0;
 }
 
 .input-group {
@@ -578,6 +622,12 @@ input[type="email"]:focus {
   border-color: #f97316;
   background: rgba(249, 115, 22, 0.08);
   color: #ffddb4;
+}
+
+.form-note {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 1rem;
 }
 
 /* Footer */
