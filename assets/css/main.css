@@ -34,6 +34,10 @@ body {
   overflow-x: hidden;
 }
 
+.no-scroll {
+  overflow: hidden;
+}
+
 img {
   max-width: 100%;
   display: block;
@@ -213,6 +217,27 @@ header {
   height: 2px;
   background: var(--text);
   transition: 0.3s;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -100%;
+  background: var(--text);
+  color: var(--bg);
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  z-index: 200;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  transition: top 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.skip-link:focus,
+.skip-link:active {
+  top: 0.75rem;
 }
 
 /* Hero */

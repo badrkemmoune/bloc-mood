@@ -5,11 +5,50 @@ if (yearElement) {
   yearElement.textContent = new Date().getFullYear();
 }
 
+const nav = document.getElementById("navLinks");
+const menuButton = document.querySelector(".menu-toggle");
+let menuOpen = false;
+
+function setMenuState(open) {
+  if (!nav || !menuButton) return;
+  menuOpen = open;
+  nav.classList.toggle("open", open);
+  menuButton.setAttribute("aria-expanded", open ? "true" : "false");
+  menuButton.setAttribute("aria-controls", "navLinks");
+  document.body.classList.toggle("no-scroll", open);
+}
+
 window.toggleMenu = function toggleMenu() {
-  const nav = document.getElementById("navLinks");
-  if (!nav) return;
-  nav.classList.toggle("open");
+  setMenuState(!menuOpen);
 };
+
+if (nav && menuButton) {
+  setMenuState(false);
+
+  nav.addEventListener("click", (event) => {
+    const target = event.target;
+    if (target instanceof HTMLElement && target.tagName === "A") {
+      setMenuState(false);
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && menuOpen) {
+      setMenuState(false);
+    }
+  });
+
+  const handleMenuBlur = (event) => {
+    if (!menuOpen) return;
+    const next = event.relatedTarget;
+    if (!next || (!nav.contains(next) && next !== menuButton)) {
+      setMenuState(false);
+    }
+  };
+
+  nav.addEventListener("focusout", handleMenuBlur);
+  menuButton.addEventListener("focusout", handleMenuBlur);
+}
 
 const observerOptions = {
   threshold: 0.1,
