@@ -5,11 +5,55 @@ if (yearElement) {
   yearElement.textContent = new Date().getFullYear();
 }
 
-window.toggleMenu = function toggleMenu() {
-  const nav = document.getElementById("navLinks");
-  if (!nav) return;
-  nav.classList.toggle("open");
+const navLinks = document.getElementById("navLinks");
+const menuToggleButton = document.querySelector(".menu-toggle");
+const navContainer = document.querySelector(".nav");
+
+function setMenuState(isOpen) {
+  if (!navLinks || !menuToggleButton) return;
+  navLinks.classList.toggle("open", isOpen);
+  menuToggleButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  document.body.classList.toggle("no-scroll", isOpen);
+}
+
+window.toggleMenu = function toggleMenu(forceState) {
+  if (!navLinks) return;
+  const shouldOpen =
+    typeof forceState === "boolean"
+      ? forceState
+      : !navLinks.classList.contains("open");
+  setMenuState(shouldOpen);
 };
+
+function handleMenuBlur() {
+  if (!navContainer || !navLinks || !navLinks.classList.contains("open")) {
+    return;
+  }
+  setTimeout(() => {
+    const active = document.activeElement;
+    if (!navContainer.contains(active)) {
+      setMenuState(false);
+    }
+  }, 0);
+}
+
+if (menuToggleButton && navLinks) {
+  menuToggleButton.setAttribute("aria-controls", "navLinks");
+  menuToggleButton.addEventListener("click", () => toggleMenu());
+  menuToggleButton.addEventListener("blur", handleMenuBlur);
+
+  navLinks.addEventListener("focusout", handleMenuBlur);
+  navLinks.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => setMenuState(false));
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && navLinks.classList.contains("open")) {
+      setMenuState(false);
+      menuToggleButton.focus();
+    }
+  });
+}
 
 const observerOptions = {
   threshold: 0.1,
