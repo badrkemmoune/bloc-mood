@@ -502,6 +502,15 @@ input[type="email"]:focus-visible {
 
 .break-crew {
   background-image: url("/bloc-mood/mood-crew.jpg");
+  background-image: url("./mood-crowd.jpg");
+}
+
+.break-rooftop {
+  background-image: url("./mood-rooftop.jpg");
+}
+
+.break-crew {
+  background-image: url("./mood-crew.jpg");
 }
 
 @media (min-width: 901px) {
@@ -835,6 +844,10 @@ footer {
   <!-- Inline script to keep navigation + newsletter logic available even if asset paths break -->
   <script defer>
 "use strict";
+
+if (document.body) {
+  document.body.classList.add("js-enabled");
+}
 
 const yearElement = document.getElementById("year");
 if (yearElement) {
