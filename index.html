@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
   <title>Bloc Mood – Festival-fueled streetwear</title>
@@ -196,21 +196,34 @@
               Get early access to Drop 01 and behind-the-scenes from the Bloc Mood universe.
               No spam, just pure night mood.
             </p>
-            <form id="newsletter-form">
-			  <div class="input-group">
-				<input
-				  type="email"
-				  name="email"
-				  id="newsletter-email"
-				  placeholder="you@email.com"
-				  required
-				>
-				<button type="submit" class="btn-primary" style="padding:0.8rem 1.4rem;">Join</button>
-			  </div>
-			</form>
-			<p id="newsletter-message" style="font-size:0.7rem; color:var(--muted); margin-top:1rem;">
-			  Subscribers get the drop link before everyone else.
-			</p>
+            <form id="newsletter-form" data-locale="fr">
+              <div class="input-group">
+                <label class="visually-hidden" for="newsletter-email">Email</label>
+                <input
+                  type="email"
+                  name="email"
+                  id="newsletter-email"
+                  placeholder="you@email.com"
+                  autocomplete="email"
+                  inputmode="email"
+                  required
+                >
+                <input
+                  type="text"
+                  name="website"
+                  id="newsletter-website"
+                  class="visually-hidden"
+                  tabindex="-1"
+                  autocomplete="off"
+                  aria-hidden="true"
+                >
+                <button type="submit" class="btn-primary" style="padding:0.8rem 1.4rem;">Join</button>
+              </div>
+              <div class="alert" id="newsletter-alert" role="status" aria-live="polite" hidden></div>
+            </form>
+            <p class="helper-text" id="newsletter-helper">
+              Subscribers get the drop link before everyone else.
+            </p>
 
           </div>
 
