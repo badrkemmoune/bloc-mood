@@ -8,6 +8,7 @@ if (yearElement) {
 const navLinks = document.getElementById("navLinks");
 const menuToggleButton = document.querySelector(".menu-toggle");
 const navContainer = document.querySelector(".nav");
+const MOBILE_NAV_BREAKPOINT = 900;
 
 function setMenuState(isOpen) {
   if (!navLinks || !menuToggleButton) return;
@@ -51,6 +52,16 @@ if (menuToggleButton && navLinks) {
     if (event.key === "Escape" && navLinks.classList.contains("open")) {
       setMenuState(false);
       menuToggleButton.focus();
+    }
+  });
+
+  window.addEventListener("resize", () => {
+    if (
+      window.innerWidth > MOBILE_NAV_BREAKPOINT &&
+      (navLinks.classList.contains("open") ||
+        document.body.classList.contains("no-scroll"))
+    ) {
+      setMenuState(false);
     }
   });
 }
