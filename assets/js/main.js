@@ -5,6 +5,65 @@ if (yearElement) {
   yearElement.textContent = new Date().getFullYear();
 }
 
+const navLinks = document.getElementById("navLinks");
+const menuToggleButton = document.querySelector(".menu-toggle");
+const navContainer = document.querySelector(".nav");
+const MOBILE_NAV_BREAKPOINT = 900;
+
+function setMenuState(isOpen) {
+  if (!navLinks || !menuToggleButton) return;
+  navLinks.classList.toggle("open", isOpen);
+  menuToggleButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  document.body.classList.toggle("no-scroll", isOpen);
+}
+
+window.toggleMenu = function toggleMenu(forceState) {
+  if (!navLinks) return;
+  const shouldOpen =
+    typeof forceState === "boolean"
+      ? forceState
+      : !navLinks.classList.contains("open");
+  setMenuState(shouldOpen);
+};
+
+function handleMenuBlur() {
+  if (!navContainer || !navLinks || !navLinks.classList.contains("open")) {
+    return;
+  }
+  setTimeout(() => {
+    const active = document.activeElement;
+    if (!navContainer.contains(active)) {
+      setMenuState(false);
+    }
+  }, 0);
+}
+
+if (menuToggleButton && navLinks) {
+  menuToggleButton.setAttribute("aria-controls", "navLinks");
+  menuToggleButton.addEventListener("click", () => toggleMenu());
+  menuToggleButton.addEventListener("blur", handleMenuBlur);
+
+  navLinks.addEventListener("focusout", handleMenuBlur);
+  navLinks.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => setMenuState(false));
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && navLinks.classList.contains("open")) {
+      setMenuState(false);
+      menuToggleButton.focus();
+    }
+  });
+
+  window.addEventListener("resize", () => {
+    if (
+      window.innerWidth > MOBILE_NAV_BREAKPOINT &&
+      (navLinks.classList.contains("open") ||
+        document.body.classList.contains("no-scroll"))
+    ) {
+      setMenuState(false);
+    }
+  });
 const nav = document.getElementById("navLinks");
 const menuButton = document.querySelector(".menu-toggle");
 let menuOpen = false;
