@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bloc Mood – Festival-fueled streetwear</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Bloc Mood – festival-fueled streetwear for night crowds. From the bloc to the stage. Limited drops of tees, hoodies and crossbody bags.">
+
+  <!-- FAVICON -->
+  <link rel="icon" type="image/png" href="blocmood-favicon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050608;
+      --bg-soft: #101218;
+      --text: #f5f5f5;
+      --muted: #a0a4b0;
+      --accent: #a3ff4a;
+      --border: #272a33;
+      --radius-lg: 1.5rem;
+      --radius-md: 1rem;
+      --shadow-soft: 0 18px 40px rgba(0,0,0,0.7);
+      --nav-height: 70px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: "Space Grotesk", system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at top, #181c24 0, #050608 60%);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    img { max-width: 100%; display: block; }
+    a { color: inherit; text-decoration: none; }
+    .page { min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* --- ANIMATIONS --- */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+    }
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes neon-pulse {
+      0% { box-shadow: 0 0 0 0 rgba(163, 255, 74, 0.4); }
+      70% { box-shadow: 0 0 0 12px rgba(163, 255, 74, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(163, 255, 74, 0); }
+    }
+
+    /* --- NAV --- */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: var(--nav-height);
+      background: #050608;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      width: 100%;
+    }
+
+    .nav {
+      width: 100%;
+      height: 100%;
+      padding: 0 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      z-index: 102;
+    }
+
+    .nav-logo-wrap {
+      height: 32px;
+      padding: 2px 0;
+      background: #000;
+      border-radius: 0;
+      overflow: hidden;
+    }
+
+    .nav-logo-wrap img {
+      height: 100%;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.8rem;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      transition: color 0.3s ease;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -0.25rem;
+      width: 0;
+      height: 1px;
+      background: var(--accent);
+      transition: width 0.25s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    .nav-cta {
+      font-size: 0.75rem;
+      padding: 0.5rem 1.2rem;
+      border-radius: 999px;
+      background: var(--text);
+      color: var(--bg);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      transition: transform 0.2s;
+      box-shadow: var(--shadow-soft);
+    }
+    .nav-cta:hover { transform: translateY(-1px); }
+
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 102;
+    }
+    .menu-toggle span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--text);
+      transition: 0.3s;
+    }
+
+    /* --- LAYOUT --- */
+    main { flex: 1; }
+    .section {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+
+    .section-kicker {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 2.3rem;
+      display: block;
+    }
+
+    /* --- HERO --- */
+    .hero {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem 3.5rem;
+      min-height: 80vh;
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.9fr);
+      align-items: center;
+      gap: 3rem;
+    }
+
+    .hero-inner {
+      max-width: 620px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.3rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid rgba(163,255,74,0.3);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      background: rgba(163,255,74,0.05);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 5vw, 3.7rem);
+      line-height: 1.02;
+      margin-bottom: 1.1rem;
+      font-weight: 700;
+    }
+    .hero h1 .accent { color: var(--accent); }
+
+    .hero-text {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 520px;
+      margin-bottom: 1.4rem;
+    }
+
+    .hero-subtext {
+      color: var(--muted);
+      font-size: 0.9rem;
+      max-width: 520px;
+      margin-bottom: 2rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: var(--bg);
+      font-weight: 700;
+      padding: 0.9rem 1.8rem;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 0.85rem;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.2s;
+      animation: neon-pulse 1.9s infinite;
+    }
+    .btn-primary:hover { transform: translateY(-2px); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 0.9rem 1.8rem;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-ghost:hover { border-color: var(--text); background: rgba(255,255,255,0.05); }
+
+    .hero-brand-chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-top: 2rem;
+      padding: 0.35rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(5,6,8,0.85);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+    }
+
+    .hero-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-logo-card {
+      max-width: 420px; /* agrandi sur desktop */
+      width: 100%;
+      padding: 0;
+      border-radius: 0;
+      border: none;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .hero-logo-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 0 40px rgba(255,255,255,0.55));
+    }
+
+    /* --- IMAGE BREAK SECTIONS (3 images) --- */
+    .image-break {
+      position: relative;
+      min-height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      text-align: center;
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+      /* fixed seulement sur desktop, géré plus bas */
+      overflow: hidden;
+    }
+
+    .image-break::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0.25));
+    }
+
+    .image-break-inner {
+      position: relative;
+      padding: 2rem 1.5rem;
+      max-width: 720px;
+    }
+
+    .image-break-kicker {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      margin-bottom: 0.6rem;
+      opacity: 0.9;
+    }
+
+    .image-break-title {
+      font-size: 1.6rem;
+      font-weight: 600;
+    }
+
+    .break-crowd   { background-image: url("mood-crowd.jpg"); }
+    .break-rooftop { background-image: url("mood-rooftop.jpg"); }
+    .break-crew    { background-image: url("mood-crew.jpg"); }
+
+    /* background-attachment: fixed conservé sur desktop uniquement */
+    @media (min-width: 901px) {
+      .image-break {
+        background-attachment: fixed;
+      }
+    }
+
+    /* --- CARDS & GRID --- */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .card {
+      background: var(--bg-soft);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      border-radius: var(--radius-md);
+      transition: border-color 0.3s;
+    }
+    .card:hover { border-color: rgba(255,255,255,0.3); }
+
+    .card h3 {
+      font-size: 1.15rem;
+      margin-bottom: 0.8rem;
+      color: var(--text);
+    }
+    .card p {
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .pill-row {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1.4rem;
+      flex-wrap: wrap;
+    }
+    .pill {
+      border: 1px solid var(--border);
+      padding: 0.3rem 0.8rem;
+      border-radius: 99px;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      color: var(--muted);
+      letter-spacing: 0.14em;
+    }
+
+    /* --- COMMUNITY --- */
+    .community-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .comm-card {
+      background: linear-gradient(180deg, #101218 0%, #050608 100%);
+      border: 1px solid var(--border);
+      padding: 1.6rem;
+      border-radius: 1rem;
+    }
+    .comm-label {
+      color: var(--accent);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+
+    /* --- DROPS / JOIN --- */
+    .drops-wrapper {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .join-box {
+      background: radial-gradient(circle at top right, rgba(163,255,74,0.1), transparent), #101218;
+      border: 1px solid var(--accent);
+      padding: 2.3rem 2rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 0 35px rgba(163,255,74,0.08);
+    }
+
+    .input-group {
+      display: flex;
+      gap: 0.6rem;
+      margin-top: 1.4rem;
+      margin-bottom: 1rem;
+    }
+
+    input[type="email"] {
+      flex: 1;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid var(--border);
+      padding: 0.8rem 1.2rem;
+      border-radius: 999px;
+      color: white;
+      outline: none;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    input[type="email"]::placeholder { color: #6f7380; }
+    input[type="email"]:focus { border-color: var(--accent); }
+
+    /* --- FOOTER --- */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 2rem;
+    }
+
+    .footer-links a {
+      margin: 0 10px;
+      transition: color 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.78rem;
+    }
+    .footer-links a:hover { color: var(--text); }
+
+    /* --- RESPONSIVE --- */
+    @media (max-width: 900px) {
+      .hero {
+        padding-top: 2.5rem;
+        text-align: center;
+        justify-content: center;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      /* gros logo en 1er sur mobile */
+      .hero-logo {
+        order: -1;
+      }
+      .hero-logo-card {
+        max-width: 260px; /* version mobile */
+        margin: 0 auto 1.5rem;
+      }
+
+      .hero-inner { text-align: center; }
+      .hero-text, .hero-subtext { margin-inline: auto; }
+      .hero-actions { justify-content: center; }
+      .hero-brand-chip { margin-inline: auto; }
+
+      .drops-wrapper { grid-template-columns: 1fr; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .community-grid { grid-template-columns: 1fr; }
+
+      .menu-toggle { display: flex; }
+      .nav-cta { display: none; }
+
+      .nav-links {
+        position: fixed;
+        top: var(--nav-height);
+        left: 0;
+        right: 0;
+        background: #050608;
+        border-bottom: 1px solid var(--border);
+        flex-direction: column;
+        padding: 2rem 1.5rem 2.5rem;
+        gap: 1.5rem;
+        transform: translateY(-150%);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 99;
+      }
+      .nav-links.open {
+        transform: translateY(0);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+      }
+
+      .image-break {
+        min-height: 200px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .hero, .section { padding-inline: 1.2rem; }
+      .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .btn-primary, .btn-ghost { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <nav class="nav">
+        <div class="nav-left">
+          <div class="nav-logo-wrap">
+            <img src="blocmood-logo-menu.png" alt="Bloc Mood">
+          </div>
+        </div>
+
+        <div class="nav-links" id="navLinks">
+          <a href="#concept" onclick="toggleMenu()">Concept</a>
+          <a href="#story" onclick="toggleMenu()">Story</a>
+          <a href="#community" onclick="toggleMenu()">Community</a>
+          <a href="#drops" onclick="toggleMenu()">Drops</a>
+          <a href="#join" onclick="toggleMenu()">Join</a>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:1rem;">
+          <a href="#join" class="nav-cta">Join the bloc</a>
+          <button class="menu-toggle" onclick="toggleMenu()" aria-label="Menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-inner reveal">
+          <div class="hero-badge">
+            Festival-fueled streetwear
+          </div>
+          <h1>
+            Streetwear for night<br>
+            <span class="accent">crowds &amp; festivals.</span>
+          </h1>
+          <p class="hero-text">
+            Bloc Mood makes tees, hoodies and crossbody bags built for live sets, city lights
+            and that moment when the lights drop and the crowd screams.
+          </p>
+          <p class="hero-subtext">
+            Designed in Morocco, made for festival crowds, night owls and people who stay
+            until the last track.
+          </p>
+          <div class="hero-actions">
+            <a href="#concept" class="btn-primary">Discover the concept</a>
+            <a href="#drops" class="btn-ghost">Get Drop 01 first</a>
+          </div>
+
+          <div class="hero-brand-chip">
+            Bloc Mood · From the bloc to the stage
+          </div>
+        </div>
+
+        <div class="hero-logo reveal">
+          <div class="hero-logo-card">
+            <img src="blocmood-logo.png" alt="Bloc Mood logo">
+          </div>
+        </div>
+      </section>
+
+      <!-- IMAGE 1 : CROWD (top) -->
+      <section class="image-break break-crowd">
+        <div class="image-break-inner">
+          <div class="image-break-kicker">Live shows</div>
+          <div class="image-break-title">Born in the crowd, not in a boardroom.</div>
+        </div>
+      </section>
+
+      <!-- CONCEPT -->
+      <section id="concept" class="section reveal">
+        <h2 class="section-title">Concept</h2>
+        <span class="section-kicker">What Bloc Mood is about</span>
+        <div class="grid-2">
+          <div class="card">
+            <h3>Made for the dark</h3>
+            <p>
+              Bloc Mood is built around the moment when the lights drop and the bass hits.
+              Pieces are designed to live at night: black bases, clean silhouettes,
+              details that glow or reflect under stage lights.
+            </p>
+            <div class="pill-row">
+              <span class="pill">Night-first</span>
+              <span class="pill">Stage lights</span>
+              <span class="pill">Glow &amp; reflect</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3>From the bloc to the stage</h3>
+            <p>
+              The “bloc” is your crew, your city, your corner. The “stage” is every place
+              where the music gets loud — festivals, clubs, rooftops, beach parties.
+              Bloc Mood connects both: everyday comfort with live-show energy.
+            </p>
+            <div class="pill-row">
+              <span class="pill">Streetwear</span>
+              <span class="pill">Festivals</span>
+              <span class="pill">Memory pieces</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STORY / WHO WE ARE -->
+      <section id="story" class="section reveal">
+        <h2 class="section-title">Story</h2>
+        <span class="section-kicker">Who we are</span>
+        <div class="grid-2">
+          <div class="card">
+            <h3>Born in Morocco, built for the scene</h3>
+            <p>
+              Bloc Mood is an independent streetwear project shaped by nights between
+              Casablanca, Rabat, Agadir and Essaouira. No big budgets or fake hype —
+              just a real love for live music, design and the people in the crowd.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Limited runs, long stories</h3>
+            <p>
+              Every drop is small on purpose. We’d rather sell out than sit on piles of stock.
+              Each piece is tied to a mood, a season, a city — something you’ll remember when
+              you look at it years later.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- IMAGE 2 : ROOFTOP (middle) -->
+      <section class="image-break break-rooftop">
+        <div class="image-break-inner">
+          <div class="image-break-kicker">From Morocco</div>
+          <div class="image-break-title">City rooftops, parking lots, festival queues.</div>
+        </div>
+      </section>
+
+      <!-- COMMUNITY -->
+      <section id="community" class="section reveal">
+        <h2 class="section-title">Community</h2>
+        <span class="section-kicker">Who Bloc Mood speaks to</span>
+        <div class="community-grid">
+          <div class="comm-card">
+            <div class="comm-label">Night crowds</div>
+            <h3 style="font-size:1rem; color:white;">For the people in the pit</h3>
+            <p style="font-size:0.85rem; color:var(--muted);">
+              For those who show up early, stay late and scream every lyric. Bloc Mood is built
+              around real crowds, not empty slogans.
+            </p>
+          </div>
+          <div class="comm-card">
+            <div class="comm-label">Local scene</div>
+            <h3 style="font-size:1rem; color:white;">Moroccan festivals first</h3>
+            <p style="font-size:0.85rem; color:var(--muted);">
+              Gnaoua, Jazzablanca, L’Boulevard, MOGA and more — we follow the local calendar
+              and build outfits around nights that actually happen here.
+            </p>
+          </div>
+          <div class="comm-card">
+            <div class="comm-label">Future collabs</div>
+            <h3 style="font-size:1rem; color:white;">DJs, artists, photographers</h3>
+            <p style="font-size:0.85rem; color:var(--muted);">
+              We aim to grow with the scene, not above it. Small, real collabs first:
+              a DJ, a local event, a photographer, a crew. The rest comes later.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- DROPS + JOIN -->
+      <section id="drops" class="section reveal">
+        <h2 class="section-title">Drops</h2>
+        <span class="section-kicker">Drop 01 · Glow</span>
+        <div class="drops-wrapper">
+          <div class="join-box" id="join">
+            <h3 style="font-size:1.4rem; margin-bottom:0.5rem; color:white;">Join the bloc</h3>
+            <p style="color:var(--muted);">
+              Get early access to Drop 01 and behind-the-scenes from the Bloc Mood universe.
+              No spam, just pure night mood.
+            </p>
+            <form id="newsletter-form">
+			  <div class="input-group">
+				<input
+				  type="email"
+				  name="email"
+				  id="newsletter-email"
+				  placeholder="you@email.com"
+				  required
+				>
+				<button type="submit" class="btn-primary" style="padding:0.8rem 1.4rem;">Join</button>
+			  </div>
+			</form>
+			<p id="newsletter-message" style="font-size:0.7rem; color:var(--muted); margin-top:1rem;">
+			  Subscribers get the drop link before everyone else.
+			</p>
+
+          </div>
+
+          <div>
+            <h3 style="color:white; font-size:1.3rem; margin-bottom:1rem;">Drop 01 · Glow</h3>
+            <p style="color:var(--muted); margin-bottom:1rem;">
+              The first Bloc Mood drop focuses on one idea: pieces that stay quiet in daylight
+              and turn on when the lights go down. Think black tees and hoodies with glowing
+              lines, small florals or smileys that appear under UV and stage lights.
+            </p>
+            <p style="color:var(--muted); margin-bottom:1rem;">
+              Line-up: oversized heavyweight tees, mid-weight hoodies and a hands-free
+              crossbody bag for your phone, wallet, earplugs and one more thing.
+            </p>
+            <p style="color:var(--muted); margin-bottom:1.2rem;">
+              It’s a small run. Once it’s gone, it becomes part of the story — no restock,
+              just memories from that season.
+            </p>
+            <div class="hero-badge" style="margin-top:0;">
+              Drop 01 · Glow · Coming soon
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- IMAGE 3 : CREW (bottom) -->
+      <section class="image-break break-crew">
+        <div class="image-break-inner">
+          <div class="image-break-kicker">The bloc</div>
+          <div class="image-break-title">A crew, not just customers.</div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-links">
+        <a href="https://www.instagram.com/bloc_mood" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://blocmood.store" target="_blank" rel="noopener">Store</a>
+        <a href="mailto:hello@blocmood.ma">Contact</a>
+      </div>
+      <div style="margin-top:1rem;">© <span id="year"></span> Bloc Mood · Casablanca.</div>
+    </footer>
+  </div>
+
+  <script>
+    // Year
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Mobile menu
+    function toggleMenu() {
+      const nav = document.getElementById('navLinks');
+      nav.classList.toggle('open');
+    }
+
+    // Scroll reveal
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: "0px 0px -50px 0px"
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('active');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Parallax "figé" sur mobile pour les 3 sections image
+    (function () {
+      const MOBILE_MAX_WIDTH = 900;
+      let enabled = false;
+      let sections = [];
+      function handleScroll() {
+        sections.forEach(sec => {
+          const rect = sec.getBoundingClientRect();
+          const offset = rect.top * -0.2; // intensité de l'effet
+          sec.style.backgroundPosition = "center " + offset + "px";
+        });
+      }
+      function updateParallax() {
+        const shouldEnable = window.innerWidth <= MOBILE_MAX_WIDTH;
+        if (shouldEnable && !enabled) {
+          sections = Array.from(document.querySelectorAll('.image-break'));
+          if (!sections.length) return;
+          enabled = true;
+          window.addEventListener('scroll', handleScroll, { passive: true });
+          handleScroll();
+        } else if (!shouldEnable && enabled) {
+          enabled = false;
+          window.removeEventListener('scroll', handleScroll);
+          sections.forEach(sec => sec.style.backgroundPosition = "center");
+          sections = [];
+        }
+      }
+      window.addEventListener('load', updateParallax);
+      window.addEventListener('resize', updateParallax);
+    })();
+	
+	    // Formulaire newsletter
+    (function () {
+      const form = document.getElementById('newsletter-form');
+      const emailInput = document.getElementById('newsletter-email');
+      const messageEl = document.getElementById('newsletter-message');
+
+      if (!form || !emailInput || !messageEl) return;
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const email = emailInput.value.trim();
+        if (!email) return;
+
+        messageEl.textContent = 'Sending...';
+
+        fetch('subscribe.php', {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: new URLSearchParams({ email })
+        })
+        .then(function (res) {
+          return res.json().catch(function () { return {}; });
+        })
+        .then(function (data) {
+          if (data.success) {
+            messageEl.textContent = "Welcome to the bloc, you're in ✌️";
+            emailInput.value = '';
+          } else {
+            messageEl.textContent = data.message || 'Something went wrong. Please try again.';
+          }
+        })
+        .catch(function () {
+          messageEl.textContent = 'Connection error. Please try again in a moment.';
+        });
+      });
+    })();
+
+	
+  </script>
+</body>
+</html>
