@@ -17,6 +17,7 @@
   <script defer src="assets/js/main.min.js"></script>
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Skip to content</a>
   <div class="page">
     <header>
       <nav class="nav">
@@ -27,23 +28,23 @@
         </div>
 
         <div class="nav-links" id="navLinks">
-          <a href="#concept" onclick="toggleMenu()">Concept</a>
-          <a href="#story" onclick="toggleMenu()">Story</a>
-          <a href="#community" onclick="toggleMenu()">Community</a>
-          <a href="#drops" onclick="toggleMenu()">Drops</a>
-          <a href="#join" onclick="toggleMenu()">Join</a>
+          <a href="#concept">Concept</a>
+          <a href="#story">Story</a>
+          <a href="#community">Community</a>
+          <a href="#drops">Drops</a>
+          <a href="#join">Join</a>
         </div>
 
         <div style="display:flex; align-items:center; gap:1rem;">
           <a href="#join" class="nav-cta">Join the bloc</a>
-          <button class="menu-toggle" onclick="toggleMenu()" aria-label="Menu">
+          <button class="menu-toggle" onclick="toggleMenu()" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
             <span></span><span></span><span></span>
           </button>
         </div>
       </nav>
     </header>
 
-    <main>
+    <main id="main-content">
       <!-- HERO -->
       <section class="hero">
         <div class="hero-inner reveal">
