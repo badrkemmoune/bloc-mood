@@ -104,12 +104,17 @@ a {
 
 /* Animations */
 .reveal {
+  opacity: 1;
+  transform: none;
+}
+
+body.js-enabled .reveal {
   opacity: 0;
   transform: translateY(30px);
   transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
 }
 
-.reveal.active {
+body.js-enabled .reveal.active {
   opacity: 1;
   transform: translateY(0);
 }
@@ -488,15 +493,15 @@ input[type="email"]:focus-visible {
 }
 
 .break-crowd {
-  background-image: url("../../mood-crowd.jpg");
+  background-image: url("./mood-crowd.jpg");
 }
 
 .break-rooftop {
-  background-image: url("../../mood-rooftop.jpg");
+  background-image: url("./mood-rooftop.jpg");
 }
 
 .break-crew {
-  background-image: url("../../mood-crew.jpg");
+  background-image: url("./mood-crew.jpg");
 }
 
 @media (min-width: 901px) {
@@ -830,6 +835,10 @@ footer {
   <!-- Inline script to keep navigation + newsletter logic available even if asset paths break -->
   <script defer>
 "use strict";
+
+if (document.body) {
+  document.body.classList.add("js-enabled");
+}
 
 const yearElement = document.getElementById("year");
 if (yearElement) {
