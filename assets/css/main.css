@@ -504,6 +504,15 @@ header {
   margin-bottom: 1rem;
 }
 
+.honeypot-field {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  overflow: hidden;
+}
+
 input[type="email"] {
   flex: 1;
   background: rgba(0, 0, 0, 0.35);
@@ -522,6 +531,28 @@ input[type="email"]::placeholder {
 
 input[type="email"]:focus {
   border-color: var(--accent);
+}
+
+.alert {
+  margin-top: 0.5rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.alert[data-type="success"] {
+  border-color: #4ade80;
+  background: rgba(74, 222, 128, 0.08);
+  color: #b9f6ca;
+}
+
+.alert[data-type="error"] {
+  border-color: #f97316;
+  background: rgba(249, 115, 22, 0.08);
+  color: #ffddb4;
 }
 
 /* Footer */
