@@ -165,6 +165,15 @@ header {
   position: relative;
 }
 
+.nav-links a:focus-visible,
+.nav-cta:focus-visible,
+.btn-primary:focus-visible,
+.btn-ghost:focus-visible,
+input[type="email"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
 .nav-links a::after {
   content: "";
   position: absolute;
@@ -376,6 +385,11 @@ header {
   height: auto;
   display: block;
   filter: drop-shadow(0 0 40px rgba(255, 255, 255, 0.55));
+  transition: transform 0.3s ease;
+}
+
+.hero-logo-card img:hover {
+  transform: scale(1.015);
 }
 
 /* Image breaks */
@@ -697,5 +711,19 @@ footer {
   .btn-primary,
   .btn-ghost {
     width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

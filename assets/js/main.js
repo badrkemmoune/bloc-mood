@@ -71,6 +71,11 @@ document.querySelectorAll(".reveal").forEach((el) => {
   const MOBILE_MAX_WIDTH = 900;
   let enabled = false;
   let sections = [];
+  const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  function prefersReducedMotion() {
+    return mediaQuery.matches;
+  }
 
   function handleScroll() {
     sections.forEach((section) => {
@@ -81,7 +86,7 @@ document.querySelectorAll(".reveal").forEach((el) => {
   }
 
   function updateParallax() {
-    const shouldEnable = window.innerWidth <= MOBILE_MAX_WIDTH;
+    const shouldEnable = window.innerWidth <= MOBILE_MAX_WIDTH && !prefersReducedMotion();
     if (shouldEnable && !enabled) {
       sections = Array.from(document.querySelectorAll(".image-break"));
       if (!sections.length) return;
@@ -100,6 +105,7 @@ document.querySelectorAll(".reveal").forEach((el) => {
 
   window.addEventListener("load", updateParallax);
   window.addEventListener("resize", updateParallax);
+  mediaQuery.addEventListener("change", updateParallax);
 })();
 
 (function handleNewsletterForm() {
