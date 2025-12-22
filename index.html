@@ -13,11 +13,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/main.min.css">
-  <script defer src="assets/js/main.min.js"></script>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <script defer src="assets/js/main.js"></script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
+  <a href="#main-content" class="skip-link">Skip to content</a>
   <div class="page">
     <header>
       <nav class="nav">
@@ -38,6 +39,7 @@
         <div style="display:flex; align-items:center; gap:1rem;">
           <a href="#join" class="nav-cta">Join the bloc</a>
           <button class="menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+          <button class="menu-toggle" onclick="toggleMenu()" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
             <span></span><span></span><span></span>
           </button>
         </div>
@@ -197,21 +199,27 @@
               Get early access to Drop 01 and behind-the-scenes from the Bloc Mood universe.
               No spam, just pure night mood.
             </p>
-            <form id="newsletter-form">
-			  <div class="input-group">
-				<input
-				  type="email"
-				  name="email"
-				  id="newsletter-email"
-				  placeholder="you@email.com"
-				  required
-				>
-				<button type="submit" class="btn-primary" style="padding:0.8rem 1.4rem;">Join</button>
-			  </div>
-			</form>
-			<p id="newsletter-message" style="font-size:0.7rem; color:var(--muted); margin-top:1rem;">
-			  Subscribers get the drop link before everyone else.
-			</p>
+            <form id="newsletter-form" novalidate>
+		  <div class="input-group">
+			<input
+			  type="email"
+			  name="email"
+			  id="newsletter-email"
+			  placeholder="you@email.com"
+			  autocomplete="email"
+			  required
+			>
+			<button type="submit" class="btn-primary" style="padding:0.8rem 1.4rem;">Join</button>
+		  </div>
+		  <div class="honeypot-field" aria-hidden="true">
+			<label for="newsletter-website">Leave this field empty</label>
+			<input type="text" id="newsletter-website" name="website" tabindex="-1" autocomplete="off">
+		  </div>
+		</form>
+		<div id="newsletter-alert" class="alert" role="status" aria-live="polite" hidden></div>
+		<p id="newsletter-message" style="font-size:0.7rem; color:var(--muted); margin-top:1rem;">
+		  Subscribers get the drop link before everyone else.
+		</p>
 
           </div>
 
