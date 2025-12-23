@@ -785,6 +785,7 @@ footer {
   }
 
   .nav-links {
+    display: none;
     position: fixed;
     top: var(--nav-height);
     left: 0;
@@ -794,13 +795,22 @@ footer {
     flex-direction: column;
     padding: 2rem 1.5rem 2.5rem;
     gap: 1.5rem;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
     transform: translateY(-150%);
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transition:
+      transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.3s ease;
     z-index: 99;
   }
 
   .nav-links.open {
+    display: flex;
     transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
   }
 
@@ -863,6 +873,7 @@ function setMenuState(isOpen) {
   if (!navLinks || !menuToggleButton) return;
   navLinks.classList.toggle("open", isOpen);
   menuToggleButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  navLinks.setAttribute("aria-hidden", isOpen ? "false" : "true");
   document.body.classList.toggle("no-scroll", isOpen);
 }
 
@@ -875,16 +886,17 @@ window.toggleMenu = function toggleMenu(forceState) {
   setMenuState(shouldOpen);
 };
 
-function handleMenuBlur() {
+function handleMenuBlur(event) {
   if (!navContainer || !navLinks || !navLinks.classList.contains("open")) {
     return;
   }
-  setTimeout(() => {
-    const active = document.activeElement;
-    if (!navContainer.contains(active)) {
-      setMenuState(false);
-    }
-  }, 0);
+  const nextFocus = event?.relatedTarget;
+  if (!nextFocus) {
+    return;
+  }
+  if (!navContainer.contains(nextFocus)) {
+    setMenuState(false);
+  }
 }
 
 if (menuToggleButton && navLinks) {
@@ -893,6 +905,15 @@ if (menuToggleButton && navLinks) {
   menuToggleButton.addEventListener("blur", handleMenuBlur);
 
   navLinks.addEventListener("focusout", handleMenuBlur);
+  document.addEventListener("pointerdown", (event) => {
+    if (
+      navLinks.classList.contains("open") &&
+      navContainer &&
+      !navContainer.contains(event.target)
+    ) {
+      setMenuState(false);
+    }
+  });
   navLinks.querySelectorAll("a").forEach((link) => {
     link.addEventListener("click", () => setMenuState(false));
   });
@@ -1148,7 +1169,7 @@ if (supportsIntersectionObserver) {
           </div>
         </div>
 
-        <div class="nav-links" id="navLinks">
+        <div class="nav-links" id="navLinks" aria-hidden="true">
           <a href="#concept">Concept</a>
           <a href="#story">Story</a>
           <a href="#community">Community</a>
