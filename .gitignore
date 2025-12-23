@@ -3,3 +3,7 @@ data/*
 !data/.gitignore
 !data/.htaccess
 npm-debug.log*
+assets/*.webp
+assets/*-1920.*
+assets/og-cover.*
+cpanel_public_html/assets/*
