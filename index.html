@@ -875,16 +875,17 @@ window.toggleMenu = function toggleMenu(forceState) {
   setMenuState(shouldOpen);
 };
 
-function handleMenuBlur() {
+function handleMenuBlur(event) {
   if (!navContainer || !navLinks || !navLinks.classList.contains("open")) {
     return;
   }
-  setTimeout(() => {
-    const active = document.activeElement;
-    if (!navContainer.contains(active)) {
-      setMenuState(false);
-    }
-  }, 0);
+  const nextFocus = event?.relatedTarget;
+  if (!nextFocus) {
+    return;
+  }
+  if (!navContainer.contains(nextFocus)) {
+    setMenuState(false);
+  }
 }
 
 if (menuToggleButton && navLinks) {
@@ -893,6 +894,15 @@ if (menuToggleButton && navLinks) {
   menuToggleButton.addEventListener("blur", handleMenuBlur);
 
   navLinks.addEventListener("focusout", handleMenuBlur);
+  document.addEventListener("pointerdown", (event) => {
+    if (
+      navLinks.classList.contains("open") &&
+      navContainer &&
+      !navContainer.contains(event.target)
+    ) {
+      setMenuState(false);
+    }
+  });
   navLinks.querySelectorAll("a").forEach((link) => {
     link.addEventListener("click", () => setMenuState(false));
   });
