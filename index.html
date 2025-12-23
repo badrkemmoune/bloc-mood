@@ -287,27 +287,6 @@ input[type="email"]:focus-visible {
   transition: 0.3s;
 }
 
-.skip-link {
-  position: absolute;
-  left: 1rem;
-  top: -100%;
-  background: var(--text);
-  color: var(--bg);
-  padding: 0.75rem 1rem;
-  border-radius: 0.75rem;
-  z-index: 200;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-weight: 700;
-  transition: top 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-}
-
-.skip-link:focus,
-.skip-link:active {
-  top: 0.75rem;
-}
-
 /* Hero */
 .hero {
   max-width: 1080px;
@@ -493,15 +472,6 @@ input[type="email"]:focus-visible {
 }
 
 .break-crowd {
-  background-image: url("/bloc-mood/mood-crowd.jpg");
-}
-
-.break-rooftop {
-  background-image: url("/bloc-mood/mood-rooftop.jpg");
-}
-
-.break-crew {
-  background-image: url("/bloc-mood/mood-crew.jpg");
   background-image: url("./mood-crowd.jpg");
 }
 
@@ -850,176 +820,220 @@ footer {
   }
 }
 
-</style>
+  </style>
   <!-- Inline script to keep navigation + newsletter logic available even if asset paths break -->
   <script defer>
 "use strict";
 
-if (document.body) {
-  document.body.classList.add("js-enabled");
-}
-
-const yearElement = document.getElementById("year");
-if (yearElement) {
-  yearElement.textContent = new Date().getFullYear();
-}
-
-const navLinks = document.getElementById("navLinks");
-const menuToggleButton = document.querySelector(".menu-toggle");
-const navContainer = document.querySelector(".nav");
-const MOBILE_NAV_BREAKPOINT = 900;
-
-function setMenuState(isOpen) {
-  if (!navLinks || !menuToggleButton) return;
-  navLinks.classList.toggle("open", isOpen);
-  menuToggleButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
-  navLinks.setAttribute("aria-hidden", isOpen ? "false" : "true");
-  document.body.classList.toggle("no-scroll", isOpen);
-}
-
-window.toggleMenu = function toggleMenu(forceState) {
-  if (!navLinks) return;
-  const shouldOpen =
-    typeof forceState === "boolean"
-      ? forceState
-      : !navLinks.classList.contains("open");
-  setMenuState(shouldOpen);
-};
-
-function handleMenuBlur(event) {
-  if (!navContainer || !navLinks || !navLinks.classList.contains("open")) {
-    return;
-  }
-  const nextFocus = event?.relatedTarget;
-  if (!nextFocus) {
-    return;
-  }
-  if (!navContainer.contains(nextFocus)) {
-    setMenuState(false);
+function onReady(callback) {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", callback, { once: true });
+  } else {
+    callback();
   }
 }
 
-onReady(() => {
-  if (document.body) {
-    document.body.classList.add("js-enabled");
+function setCurrentYear() {
+  const yearElement = document.getElementById("year");
+  if (yearElement) {
+    yearElement.textContent = new Date().getFullYear();
   }
+}
 
-  navLinks.addEventListener("focusout", handleMenuBlur);
-  document.addEventListener("pointerdown", (event) => {
-    if (
-      navLinks.classList.contains("open") &&
-      navContainer &&
-      !navContainer.contains(event.target)
-    ) {
-      setMenuState(false);
-    }
-  });
-  navLinks.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => setMenuState(false));
-  });
-
+function setupNav() {
   const navLinks = document.getElementById("navLinks");
   const menuToggleButton = document.querySelector(".menu-toggle");
   const navContainer = document.querySelector(".nav");
   const MOBILE_NAV_BREAKPOINT = 900;
 
+  if (!navLinks || !menuToggleButton || !navContainer) return;
+
   function setMenuState(isOpen) {
-    if (!navLinks || !menuToggleButton) return;
     navLinks.classList.toggle("open", isOpen);
+    navLinks.setAttribute("aria-hidden", isOpen ? "false" : "true");
     menuToggleButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
     document.body.classList.toggle("no-scroll", isOpen);
   }
 
-const revealElements = document.querySelectorAll(".reveal");
-const supportsIntersectionObserver = "IntersectionObserver" in window;
-
-if (supportsIntersectionObserver) {
-  if (document.body) {
-    document.body.classList.add("js-enabled");
+  function closeMenu() {
+    setMenuState(false);
   }
 
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: "0px 0px -50px 0px",
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("active");
-      }
-    });
-  }, observerOptions);
-
-  revealElements.forEach((el) => {
-    observer.observe(el);
+  menuToggleButton.setAttribute("aria-controls", "navLinks");
+  menuToggleButton.addEventListener("click", () => {
+    const shouldOpen = !navLinks.classList.contains("open");
+    setMenuState(shouldOpen);
   });
-} else {
-  revealElements.forEach((el) => el.classList.add("active"));
+
+  navLinks.addEventListener("focusout", (event) => {
+    if (!navLinks.classList.contains("open")) return;
+    const nextFocus = event.relatedTarget;
+    if (nextFocus && !navContainer.contains(nextFocus)) {
+      closeMenu();
+    }
+  });
+
+  document.addEventListener("pointerdown", (event) => {
+    if (navLinks.classList.contains("open") && !navContainer.contains(event.target)) {
+      closeMenu();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && navLinks.classList.contains("open")) {
+      closeMenu();
+      menuToggleButton.focus();
+    }
+  });
+
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > MOBILE_NAV_BREAKPOINT && navLinks.classList.contains("open")) {
+      closeMenu();
+    }
+  });
+
+  navLinks.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", closeMenu);
+  });
 }
 
-  if (menuToggleButton && navLinks) {
-    menuToggleButton.setAttribute("aria-controls", "navLinks");
-    menuToggleButton.addEventListener("click", () => toggleMenu());
-    menuToggleButton.addEventListener("blur", handleMenuBlur);
+function setupRevealAnimations() {
+  const revealElements = document.querySelectorAll(".reveal");
+  if (!revealElements.length) return;
 
-    navLinks.addEventListener("focusout", handleMenuBlur);
-    navLinks.querySelectorAll("a").forEach((link) => {
-      link.addEventListener("click", () => setMenuState(false));
-    });
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const observerSupported = "IntersectionObserver" in window;
 
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && navLinks.classList.contains("open")) {
-        setMenuState(false);
-        menuToggleButton.focus();
-      }
-    });
+  if (!observerSupported || prefersReducedMotion.matches) {
+    revealElements.forEach((el) => el.classList.add("active"));
+    return;
+  }
 
-    window.addEventListener("resize", () => {
-      if (
-        window.innerWidth > MOBILE_NAV_BREAKPOINT &&
-        (navLinks.classList.contains("open") ||
-          document.body.classList.contains("no-scroll"))
-      ) {
-        setMenuState(false);
-      }
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("active");
+        }
+      });
+    },
+    { threshold: 0.1, rootMargin: "0px 0px -50px 0px" },
+  );
+
+  revealElements.forEach((el) => observer.observe(el));
+}
+
+function setupMobileParallax() {
+  const sections = Array.from(document.querySelectorAll(".image-break"));
+  if (!sections.length) return;
+
+  const widthQuery = window.matchMedia("(max-width: 900px)");
+  const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let enabled = false;
+
+  function handleScroll() {
+    sections.forEach((section) => {
+      const rect = section.getBoundingClientRect();
+      const offset = rect.top * -0.12;
+      section.style.backgroundPosition = `center calc(50% + ${offset}px)`;
     });
   }
 
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: "0px 0px -50px 0px",
+  function enableParallax() {
+    if (enabled) return;
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    enabled = true;
+  }
+
+  function disableParallax() {
+    if (!enabled) return;
+    window.removeEventListener("scroll", handleScroll);
+    sections.forEach((section) => {
+      section.style.backgroundPosition = "center";
+    });
+    enabled = false;
+  }
+
+  function updateParallax() {
+    if (widthQuery.matches && !reducedMotionQuery.matches) {
+      enableParallax();
+    } else {
+      disableParallax();
+    }
+  }
+
+  widthQuery.addEventListener("change", updateParallax);
+  reducedMotionQuery.addEventListener("change", updateParallax);
+  updateParallax();
+}
+
+function setupNewsletterForm() {
+  const form = document.getElementById("newsletter-form");
+  const emailInput = document.getElementById("newsletter-email");
+  const honeypotInput = document.getElementById("newsletter-website");
+  const messageEl = document.getElementById("newsletter-message");
+  const alertEl = document.getElementById("newsletter-alert");
+
+  if (!form || !emailInput || !messageEl || !alertEl) return;
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+  const tempEmailDomains = new Set([
+    "mailinator.com",
+    "tempmail.com",
+    "10minutemail.com",
+    "guerrillamail.com",
+    "yopmail.com",
+  ]);
+
+  const locales = {
+    en: {
+      sending: "Sending...",
+      success: "Welcome to the bloc, you're in ✌️",
+      invalidEmail: "Please enter a valid email address.",
+      tempDomain: "Temporary email domains are not allowed.",
+      botDetected: "Action blocked. Please try again.",
+      defaultError: "Something went wrong. Please try again.",
+      networkError: "Connection error. Please try again in a moment.",
+      clientError: "Unable to process request. Please try again later.",
+      serverError: "Server error. Please retry in a moment.",
+      rateLimited: "Too many attempts. Please slow down and try again.",
+    },
+    fr: {
+      sending: "Envoi en cours...",
+      success: "Bienvenue dans le bloc, tu es inscrit ✌️",
+      invalidEmail: "Merci d'entrer une adresse email valide.",
+      tempDomain: "Les emails temporaires ne sont pas autorisés.",
+      botDetected: "Action bloquée. Réessaie dans un instant.",
+      defaultError: "Une erreur est survenue. Réessaie plus tard.",
+      networkError: "Erreur de connexion. Réessaie dans un instant.",
+      clientError: "Requête invalide. Réessaie plus tard.",
+      serverError: "Erreur serveur. Réessaie dans un instant.",
+      rateLimited: "Trop de tentatives. Réessaie dans un moment.",
+    },
   };
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("active");
-      }
-    });
-  }, observerOptions);
+  const getLocaleStrings = () => {
+    const lang = document.documentElement.lang || "en";
+    return locales[lang] || locales.en;
+  };
 
-  document.querySelectorAll(".reveal").forEach((el) => {
-    observer.observe(el);
-  });
+  function showAlert(message, type = "neutral") {
+    alertEl.textContent = message;
+    alertEl.dataset.type = type;
+    alertEl.hidden = false;
+  }
 
-  (function enableMobileParallax() {
-    const MOBILE_MAX_WIDTH = 900;
-    let enabled = false;
-    let sections = [];
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  function clearAlert() {
+    alertEl.textContent = "";
+    alertEl.dataset.type = "";
+    alertEl.hidden = true;
+  }
 
-    function prefersReducedMotion() {
-      return mediaQuery.matches;
-    }
-
-  if (!form || !emailInput || !messageEl) return;
-
-  form.addEventListener("submit", (event) => {
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const email = emailInput.value.trim();
     const website = honeypotInput?.value?.trim() || "";
-
     const {
       sending,
       success,
@@ -1034,180 +1048,85 @@ if (supportsIntersectionObserver) {
     } = getLocaleStrings();
 
     clearAlert();
-    if (!email) return;
 
-    const emailPattern =
-      /^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$/i;
-    if (!emailPattern.test(email)) {
+    if (!email || !emailPattern.test(email)) {
       showAlert(invalidEmail, "error");
+      messageEl.textContent = invalidEmail;
       return;
     }
 
-    function updateParallax() {
-      const shouldEnable = window.innerWidth <= MOBILE_MAX_WIDTH && !prefersReducedMotion();
-      if (shouldEnable && !enabled) {
-        sections = Array.from(document.querySelectorAll(".image-break"));
-        if (!sections.length) return;
-        enabled = true;
-        window.addEventListener("scroll", handleScroll, { passive: true });
-        handleScroll();
-      } else if (!shouldEnable && enabled) {
-        enabled = false;
-        window.removeEventListener("scroll", handleScroll);
-        sections.forEach((section) => {
-          section.style.backgroundPosition = "center";
-        });
-        sections = [];
-      }
+    const domain = email.split("@")[1]?.toLowerCase();
+    if (domain && tempEmailDomains.has(domain)) {
+      showAlert(tempDomain, "error");
+      messageEl.textContent = tempDomain;
+      return;
     }
 
-    window.addEventListener("load", updateParallax);
-    window.addEventListener("resize", updateParallax);
-    mediaQuery.addEventListener("change", updateParallax);
-  })();
-
-  (function handleNewsletterForm() {
-    const form = document.getElementById("newsletter-form");
-    const emailInput = document.getElementById("newsletter-email");
-    const honeypotInput = document.getElementById("newsletter-website");
-    const messageEl = document.getElementById("newsletter-message");
-    const alertEl = document.getElementById("newsletter-alert");
-
-    const locales = {
-      en: {
-        sending: "Sending...",
-        success: "Welcome to the bloc, you're in ✌️",
-        invalidEmail: "Please enter a valid email address.",
-        tempDomain: "Temporary email domains are not allowed.",
-        botDetected: "Action blocked. Please try again.",
-        defaultError: "Something went wrong. Please try again.",
-        networkError: "Connection error. Please try again in a moment.",
-        clientError: "Unable to process request. Please try again later.",
-        serverError: "Server error. Please retry in a moment.",
-        rateLimited: "Too many attempts. Please slow down and try again.",
-      },
-      fr: {
-        sending: "Envoi en cours...",
-        success: "Bienvenue dans le bloc, tu es inscrit ✌️",
-        invalidEmail: "Merci d'entrer une adresse email valide.",
-        tempDomain: "Les emails temporaires ne sont pas autorisés.",
-        botDetected: "Action bloquée. Réessaie dans un instant.",
-        defaultError: "Une erreur est survenue. Réessaie plus tard.",
-        networkError: "Erreur de connexion. Réessaie dans un instant.",
-        clientError: "Requête invalide. Réessaie plus tard.",
-        serverError: "Erreur serveur. Réessaie dans un instant.",
-        rateLimited: "Trop de tentatives. Réessaie dans un moment.",
-      },
-    };
-
-    const getLocaleStrings = () => {
-      const lang = document.documentElement.lang || "en";
-      return locales[lang] || locales.en;
-    };
-
-    const tempEmailDomains = [
-      "mailinator.com",
-      "tempmail.com",
-      "10minutemail.com",
-      "guerrillamail.com",
-      "yopmail.com",
-    ];
-
-    function showAlert(message, type = "neutral") {
-      if (!alertEl) return;
-      alertEl.textContent = message;
-      alertEl.dataset.type = type;
-      alertEl.hidden = false;
+    if (website) {
+      showAlert(botDetected, "error");
+      messageEl.textContent = botDetected;
+      return;
     }
 
-    function clearAlert() {
-      if (alertEl) {
-        alertEl.textContent = "";
-        alertEl.hidden = true;
-        alertEl.dataset.type = "";
-      }
-    }
+    showAlert(sending);
+    messageEl.textContent = sending;
 
-    fetch("/api/subscribe", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify({ email, website }),
-    })
-      .then((res) =>
-        res
-          .json()
-          .catch(() => ({}))
-          .then((data) => ({ res, data }))
-      )
-      .then(({ res, data }) => {
-        if (res.ok && data.success) {
-          messageEl.textContent = success;
-          showAlert(success, "success");
-          emailInput.value = "";
-          if (honeypotInput) {
-            honeypotInput.value = "";
-          }
-          return;
+    try {
+      const response = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ email, website }),
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (response.ok && data.success) {
+        showAlert(success, "success");
+        messageEl.textContent = success;
+        emailInput.value = "";
+        if (honeypotInput) {
+          honeypotInput.value = "";
         }
+        return;
+      }
 
-        if (res.status === 429) {
-          showAlert(rateLimited, "error");
-        } else if (res.status >= 400 && res.status < 500) {
-          showAlert(data.message || clientError, "error");
-        } else if (res.status >= 500) {
-          showAlert(serverError, "error");
-        } else {
-          showAlert(data.message || defaultError, "error");
-        }
-
+      if (response.status === 429) {
+        showAlert(rateLimited, "error");
+        messageEl.textContent = rateLimited;
+      } else if (response.status >= 500) {
+        showAlert(serverError, "error");
+        messageEl.textContent = serverError;
+      } else if (response.status >= 400) {
+        showAlert(data.message || clientError, "error");
+        messageEl.textContent = data.message || clientError;
+      } else {
+        showAlert(data.message || defaultError, "error");
         messageEl.textContent = data.message || defaultError;
-      })
-        .then((res) =>
-          res
-            .json()
-            .catch(() => ({}))
-            .then((data) => ({ res, data }))
-        )
-        .then(({ res, data }) => {
-          if (res.ok && data.success) {
-            messageEl.textContent = success;
-            showAlert(success, "success");
-            emailInput.value = "";
-            if (honeypotInput) {
-              honeypotInput.value = "";
-            }
-            return;
-          }
+      }
+    } catch (error) {
+      showAlert(networkError, "error");
+      messageEl.textContent = networkError;
+    }
+  });
+}
 
-          if (res.status === 429) {
-            showAlert(rateLimited, "error");
-          } else if (res.status >= 400 && res.status < 500) {
-            showAlert(data.message || clientError, "error");
-          } else if (res.status >= 500) {
-            showAlert(serverError, "error");
-          } else {
-            showAlert(data.message || defaultError, "error");
-          }
-
-          messageEl.textContent = data.message || defaultError;
-        })
-        .catch(() => {
-          showAlert(networkError, "error");
-          messageEl.textContent = networkError;
-        });
-    });
-  })();
+onReady(() => {
+  document.body?.classList.add("js-enabled");
+  setCurrentYear();
+  setupNav();
+  setupRevealAnimations();
+  setupMobileParallax();
+  setupNewsletterForm();
 });
 
 </script>
 </head>
 <body>
   <a class="skip-link" href="#main-content">Skip to content</a>
-  <a href="#main-content" class="skip-link">Skip to content</a>
   <div class="page">
     <header>
       <nav class="nav">
@@ -1388,26 +1307,26 @@ if (supportsIntersectionObserver) {
               No spam, just pure night mood.
             </p>
             <form id="newsletter-form" novalidate>
-		  <div class="input-group">
-			<input
-			  type="email"
-			  name="email"
-			  id="newsletter-email"
-			  placeholder="you@email.com"
-			  autocomplete="email"
-			  required
-			>
-			<button type="submit" class="btn-primary" style="padding:0.8rem 1.4rem;">Join</button>
-		  </div>
-		  <div class="honeypot-field" aria-hidden="true">
-			<label for="newsletter-website">Leave this field empty</label>
-			<input type="text" id="newsletter-website" name="website" tabindex="-1" autocomplete="off">
-		  </div>
-		</form>
-		<div id="newsletter-alert" class="alert" role="status" aria-live="polite" hidden></div>
-		<p id="newsletter-message" class="form-note">
-		  Subscribers get the drop link before everyone else.
-		</p>
+              <div class="input-group">
+                <input
+                  type="email"
+                  name="email"
+                  id="newsletter-email"
+                  placeholder="you@email.com"
+                  autocomplete="email"
+                  required
+                >
+                <button type="submit" class="btn-primary" style="padding:0.8rem 1.4rem;">Join</button>
+              </div>
+              <div class="honeypot-field" aria-hidden="true">
+                <label for="newsletter-website">Leave this field empty</label>
+                <input type="text" id="newsletter-website" name="website" tabindex="-1" autocomplete="off">
+              </div>
+            </form>
+            <div id="newsletter-alert" class="alert" role="status" aria-live="polite" hidden></div>
+            <p id="newsletter-message" class="form-note">
+              Subscribers get the drop link before everyone else.
+            </p>
 
           </div>
 
