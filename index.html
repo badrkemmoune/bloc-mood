@@ -1031,6 +1031,7 @@ document.querySelectorAll(".reveal").forEach((el) => {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     const email = emailInput.value.trim();
+    const website = honeypotInput?.value?.trim() || "";
 
     const {
       sending,
@@ -1075,7 +1076,7 @@ document.querySelectorAll(".reveal").forEach((el) => {
         "Content-Type": "application/json",
       },
       credentials: "include",
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ email, website }),
     })
       .then((res) =>
         res
