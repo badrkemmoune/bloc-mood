@@ -1030,6 +1030,43 @@ function setupNewsletterForm() {
     alertEl.hidden = true;
   }
 
+  const subscriptionEndpoints = ["/api/subscribe.php", "/api/subscribe"];
+
+  async function submitSubscription(payload) {
+    let lastError = { status: null, data: {}, network: false };
+
+    for (const endpoint of subscriptionEndpoints) {
+      try {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(payload),
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (response.ok && data.success) {
+          return { success: true, data };
+        }
+
+        if (response.status === 404) {
+          lastError = { status: response.status, data, network: false };
+          continue;
+        }
+
+        return { success: false, status: response.status, data, network: false };
+      } catch (error) {
+        lastError = { status: null, data: {}, network: true };
+      }
+    }
+
+    return { success: false, ...lastError };
+  }
+
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const email = emailInput.value.trim();
@@ -1071,45 +1108,36 @@ function setupNewsletterForm() {
     showAlert(sending);
     messageEl.textContent = sending;
 
-    try {
-      const response = await fetch("/api/subscribe", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ email, website }),
-      });
+    const result = await submitSubscription({ email, website });
 
-      const data = await response.json().catch(() => ({}));
-
-      if (response.ok && data.success) {
-        showAlert(success, "success");
-        messageEl.textContent = success;
-        emailInput.value = "";
-        if (honeypotInput) {
-          honeypotInput.value = "";
-        }
-        return;
+    if (result.success) {
+      showAlert(success, "success");
+      messageEl.textContent = success;
+      emailInput.value = "";
+      if (honeypotInput) {
+        honeypotInput.value = "";
       }
+      return;
+    }
 
-      if (response.status === 429) {
-        showAlert(rateLimited, "error");
-        messageEl.textContent = rateLimited;
-      } else if (response.status >= 500) {
-        showAlert(serverError, "error");
-        messageEl.textContent = serverError;
-      } else if (response.status >= 400) {
-        showAlert(data.message || clientError, "error");
-        messageEl.textContent = data.message || clientError;
-      } else {
-        showAlert(data.message || defaultError, "error");
-        messageEl.textContent = data.message || defaultError;
-      }
-    } catch (error) {
+    const status = result.status;
+    const data = result.data || {};
+
+    if (result.network) {
       showAlert(networkError, "error");
       messageEl.textContent = networkError;
+    } else if (status === 429) {
+      showAlert(rateLimited, "error");
+      messageEl.textContent = rateLimited;
+    } else if (status >= 500) {
+      showAlert(serverError, "error");
+      messageEl.textContent = serverError;
+    } else if (status >= 400) {
+      showAlert(data.message || clientError, "error");
+      messageEl.textContent = data.message || clientError;
+    } else {
+      showAlert(data.message || defaultError, "error");
+      messageEl.textContent = data.message || defaultError;
     }
   });
 }
